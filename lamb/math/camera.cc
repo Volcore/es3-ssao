@@ -245,12 +245,16 @@ float *Camera::inv_projection() {
 }
 
 float *Camera::viewprojection() {
+  if (projection_dirty_)
+    BuildProjMatrix();
   if (view_dirty_)
     BuildViewMatrix();
   return viewprojection_.m;
 }
 
 float *Camera::inv_viewprojection() {
+  if (projection_dirty_)
+    BuildProjMatrix();
   if (view_dirty_)
     BuildViewMatrix();
   return inv_viewprojection_.m;

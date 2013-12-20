@@ -16,7 +16,8 @@ class VBOModel {
  public:
   VBOModel();
   ~VBOModel();
-  static VBOModel *Load(const char *const vbo_name);
+  static VBOModel *Load(const char *const vbo_name, bool texture);
+  static VBOModel *Cube();
   void Draw();
   unsigned int tri_count() const { return idx_count_/3; }
   VertexBufferObject *vbo() { return vbo_; }

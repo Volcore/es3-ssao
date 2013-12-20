@@ -8,6 +8,7 @@
 #include "lamb/math/math.h"
 #include "lamb/math/vector3f.h"
 #include "lamb/math/vector4f.h"
+#include "lamb/math/matrix33f.h"
 
 Matrix44f::Matrix44f() {
 }
@@ -367,5 +368,17 @@ void Matrix44f::Print(const char *const name) const {
   Log("%f, %f, %f, %f\n", m[1], m[5], m[9], m[13]);
   Log("%f, %f, %f, %f\n", m[2], m[6], m[10], m[14]);
   Log("%f, %f, %f, %f\n", m[3], m[7], m[11], m[15]);
+}
+
+void Matrix44f::Upper3x3(Matrix33f *o) const {
+  o->m00 = m00;
+  o->m10 = m10;
+  o->m20 = m20;
+  o->m01 = m01;
+  o->m11 = m11;
+  o->m21 = m21;
+  o->m02 = m02;
+  o->m12 = m12;
+  o->m22 = m22;
 }
 

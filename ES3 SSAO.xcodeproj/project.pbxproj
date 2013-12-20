@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		9F69F0CB1864674A00B60B1B /* cube.vbo in Resources */ = {isa = PBXBuildFile; fileRef = 9F69F0CA1864674A00B60B1B /* cube.vbo */; };
+		9F69F0CE18646B1400B60B1B /* framebufferobject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F69F0CC18646B1400B60B1B /* framebufferobject.cc */; };
+		9F69F0D01864709300B60B1B /* rect.vbo in Resources */ = {isa = PBXBuildFile; fileRef = 9F69F0CF1864709300B60B1B /* rect.vbo */; };
+		9F69F0D31864711F00B60B1B /* ssao.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 9F69F0D11864711F00B60B1B /* ssao.fsh */; };
+		9F69F0D41864711F00B60B1B /* ssao.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 9F69F0D21864711F00B60B1B /* ssao.vsh */; };
 		9F6BBF7B1862561D004DE4CC /* cube.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 9F6BBF7218625343004DE4CC /* cube.fsh */; };
 		9F6BBF7C1862561D004DE4CC /* cube.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 9F6BBF7318625343004DE4CC /* cube.vsh */; };
 		9F9CD6611862333500D8B243 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F9CD6601862333500D8B243 /* Foundation.framework */; };
@@ -42,6 +46,11 @@
 
 /* Begin PBXFileReference section */
 		9F69F0CA1864674A00B60B1B /* cube.vbo */ = {isa = PBXFileReference; lastKnownFileType = file; path = cube.vbo; sourceTree = "<group>"; };
+		9F69F0CC18646B1400B60B1B /* framebufferobject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = framebufferobject.cc; sourceTree = "<group>"; };
+		9F69F0CD18646B1400B60B1B /* framebufferobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = framebufferobject.h; sourceTree = "<group>"; };
+		9F69F0CF1864709300B60B1B /* rect.vbo */ = {isa = PBXFileReference; lastKnownFileType = file; path = rect.vbo; sourceTree = "<group>"; };
+		9F69F0D11864711F00B60B1B /* ssao.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ssao.fsh; sourceTree = "<group>"; };
+		9F69F0D21864711F00B60B1B /* ssao.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ssao.vsh; sourceTree = "<group>"; };
 		9F6BBF7218625343004DE4CC /* cube.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = cube.fsh; sourceTree = "<group>"; };
 		9F6BBF7318625343004DE4CC /* cube.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = cube.vsh; sourceTree = "<group>"; };
 		9F9CD65D1862333500D8B243 /* ES3 SSAO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ES3 SSAO.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +130,7 @@
 		9F69F0BF1863078800B60B1B /* data */ = {
 			isa = PBXGroup;
 			children = (
+				9F69F0CF1864709300B60B1B /* rect.vbo */,
 				9F69F0CA1864674A00B60B1B /* cube.vbo */,
 			);
 			path = data;
@@ -129,6 +139,8 @@
 		9F6BBF7118625343004DE4CC /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				9F69F0D11864711F00B60B1B /* ssao.fsh */,
+				9F69F0D21864711F00B60B1B /* ssao.vsh */,
 				9F6BBF7218625343004DE4CC /* cube.fsh */,
 				9F6BBF7318625343004DE4CC /* cube.vsh */,
 			);
@@ -248,6 +260,8 @@
 		9FEAA0A71862392300BF2DF8 /* render */ = {
 			isa = PBXGroup;
 			children = (
+				9F69F0CC18646B1400B60B1B /* framebufferobject.cc */,
+				9F69F0CD18646B1400B60B1B /* framebufferobject.h */,
 				9FEAA0A81862392300BF2DF8 /* glprogram.cc */,
 				9FEAA0A91862392300BF2DF8 /* glprogram.h */,
 				9FEAA0AA1862392300BF2DF8 /* glshader.cc */,
@@ -315,11 +329,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F69F0D41864711F00B60B1B /* ssao.vsh in Resources */,
+				9F69F0D31864711F00B60B1B /* ssao.fsh in Resources */,
 				9F69F0CB1864674A00B60B1B /* cube.vbo in Resources */,
 				9F6BBF7B1862561D004DE4CC /* cube.fsh in Resources */,
 				9F6BBF7C1862561D004DE4CC /* cube.vsh in Resources */,
 				9F9CD6781862333500D8B243 /* Main.storyboard in Resources */,
 				9F9CD6841862333500D8B243 /* Images.xcassets in Resources */,
+				9F69F0D01864709300B60B1B /* rect.vbo in Resources */,
 				9F9CD66F1862333500D8B243 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -334,6 +351,7 @@
 				9FEAA0BA1862392300BF2DF8 /* transform.cc in Sources */,
 				9FEAA0B61862392300BF2DF8 /* matrix.cc in Sources */,
 				9FEAA0B31862392300BF2DF8 /* log.cc in Sources */,
+				9F69F0CE18646B1400B60B1B /* framebufferobject.cc in Sources */,
 				9F9CD6821862333500D8B243 /* ViewController.mm in Sources */,
 				9FEAA0C01862392300BF2DF8 /* glshader.cc in Sources */,
 				9FEAA0B51862392300BF2DF8 /* frustum.cc in Sources */,

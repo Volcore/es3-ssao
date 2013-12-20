@@ -9,6 +9,7 @@
 
 struct Vector3f;
 struct Vector4f;
+struct Matrix33f;
 
 struct Matrix44f {
   // Human Readable Matrix
@@ -76,6 +77,7 @@ struct Matrix44f {
   void Multiply(const Matrix44f& a, const Matrix44f& b);
   bool EpsilonEqual(const Matrix44f& a, const float epsilon);
   void glOrthof(float l, float r, float b, float t, float n, float f);
+  void Upper3x3(Matrix33f *m) const;
 };
 
 #endif  // LAMB_MATH_MATRIX44F_H_

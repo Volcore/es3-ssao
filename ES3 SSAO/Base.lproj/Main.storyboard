@@ -8,7 +8,7 @@
         <scene sceneID="CtS-rA-C9T">
             <objects>
                 <glkViewController preferredFramesPerSecond="30" id="LVB-YS-i5n" customClass="ViewController" sceneMemberID="viewController">
-                    <glkView key="view" contentMode="scaleToFill" drawableDepthFormat="24" id="bdc-N1-crn">
+                    <glkView key="view" contentMode="scaleToFill" id="bdc-N1-crn">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
