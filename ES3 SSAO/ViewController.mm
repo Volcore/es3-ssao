@@ -36,6 +36,25 @@ float frand() {
   return float(random()) / float(RAND_MAX);
 }
 
+float kSSAOSamples[] = {
+  -0.94201624f, -0.39906216f,
+   0.94558609f, -0.76890725f,
+  -0.09418410f, -0.92938870f,
+   0.34495938f,  0.29387760f,
+  -0.91588581f,  0.45771432f,
+  -0.81544232f, -0.87912464f,
+  -0.38277543f,  0.27676845f,
+   0.97484398f,  0.75648379f,
+   0.44323325f, -0.97511554f,
+   0.53742981f, -0.47373420f,
+  -0.26496911f, -0.41893023f,
+   0.79197514f,  0.19090188f,
+  -0.24188840f,  0.99706507f,
+  -0.81409955f,  0.91437590f,
+   0.19984126f,  0.78641367f,
+   0.14383161f, -0.14100790f
+};
+
 @interface ViewController () {
   IBOutlet UILabel *timer_;
   IBOutlet UISlider *complexity_;
@@ -52,8 +71,8 @@ float frand() {
   int ssao_uni_normal_tex_;
   int ssao_uni_depth_tex_;
   int ssao_uni_samples_;
-  int ssao_uni_projection_;
   int ssao_uni_inv_projection_;
+  int ssao_uni_num_samples_;
   std::list<double> frame_times_;
   double last_time_;
   double last_update_time_;
@@ -129,8 +148,8 @@ float frand() {
   ssao_uni_normal_tex_ = ssao_program_->GetUniformLocation("uni_normal_tex");
   ssao_uni_depth_tex_ = ssao_program_->GetUniformLocation("uni_depth_tex");
   ssao_uni_samples_ = ssao_program_->GetUniformLocation("uni_samples");
-  ssao_uni_projection_ = ssao_program_->GetUniformLocation("uni_projection");
   ssao_uni_inv_projection_ = ssao_program_->GetUniformLocation("uni_inv_projection");
+  ssao_uni_num_samples_ = ssao_program_->GetUniformLocation("uni_num_samples");
   cube_ = VBOModel::Cube();
   rect_ = VBOModel::Load("rect", true);
   // Generate samples
@@ -154,7 +173,7 @@ float frand() {
 #pragma mark - GLKView and GLKViewController delegate methods
 
 const int kMinComplexity = 1;
-const int kMaxComplexity = 100;
+const int kMaxComplexity = 16;
 
 - (void)update {
   // Compute animation
@@ -169,6 +188,7 @@ const int kMaxComplexity = 100;
 }
 
 - (void)drawScene {
+  double now = Time();
   // Draw into the FBO
   if (fbo_ == 0) {
     GLKView *view = (GLKView*)self.view;
@@ -180,16 +200,42 @@ const int kMaxComplexity = 100;
   glEnable(GL_DEPTH_TEST);
   // Draw the cubes
   cube_program_->Use();
-  glUniform3f(cube_uni_color_, 1.0f, 1.0f, 1.0f);
   Vector3f offset[] = {
     Vector3f( 0.0f,  0.75f,  0.0f),
     Vector3f( 0.0f, -0.25f, -1.0f),
-    Vector3f( 1.0f, -0.25f,  0.0f)
+    Vector3f( 1.0f, -0.25f,  0.0f),
+    Vector3f( 1.0f,  0.75f,  1.0f),
+    Vector3f( 0.0f,  -0.25f,  0.0f),
+    Vector3f( 0.0f,  -1.25f,  0.0f),
+    Vector3f( 0.0f,  -2.25f,  0.0f),
+    Vector3f( 1.5f*sin(now*1.234f),  0.25f,  1.5f*cos(now*0.643f)),
+  };
+  float size[] = {
+    1.0f,
+    1.0f,
+    1.0f,
+    1.0f,
+    1.1f,
+    1.3f,
+    1.5f,
+    0.3f,
+  };
+  Vector3f color[] = {
+    COLOR_GMAIL_BLUE.xyz(),
+    COLOR_ACTION_YELLOW.xyz(),
+    COLOR_QOOP_MINT.xyz(),
+    COLOR_RSS_ORANGE.xyz(),
+    COLOR_WHITE.xyz(),
+    COLOR_WHITE.xyz(),
+    COLOR_WHITE.xyz(),
+    COLOR_TECHCRUNCH_GREEN.xyz()
   };
   int num = sizeof(offset) / sizeof(offset[0]);
   for (int i = 0; i < num; ++i) {
+    glUniform3f(cube_uni_color_, color[i].x, color[i].y, color[i].z);
     Transform t(Matrix44f(camera_.viewprojection()));
     t.glTranslate(offset[i]);
+    t.glScale(size[i]);
     glUniformMatrix4fv(cube_uni_mvp_, 1, GL_FALSE, t.raw());
     // Compute the normal matrix
     Matrix33f nm;
@@ -197,29 +243,31 @@ const int kMaxComplexity = 100;
     glUniformMatrix3fv(cube_uni_mv_normal_, 1, GL_TRUE, nm.m);
     Transform v(Matrix44f(camera_.view()));
     v.glTranslate(offset[i]);
+    v.glScale(size[i]);
     glUniformMatrix4fv(cube_uni_mv_, 1, GL_FALSE, v.raw());
     cube_->Draw();
   }
   {
     // Draw an all-encapsulating cube
+    // Use negative scaling to make the normals point inwards
     Transform t(Matrix44f(camera_.viewprojection()));
-    t.glScale(5.0f);
+    t.glScale(-5.0f);
     glUniformMatrix4fv(cube_uni_mvp_, 1, GL_FALSE, t.raw());
     // Compute the normal matrix
     Matrix33f nm;
     Matrix44f(camera_.inv_view()).Upper3x3(&nm);
     glUniformMatrix3fv(cube_uni_mv_normal_, 1, GL_TRUE, nm.m);
     Transform v(Matrix44f(camera_.view()));
-    v.glScale(5.0f);
+    v.glScale(-5.0f);
     glUniformMatrix4fv(cube_uni_mv_, 1, GL_FALSE, v.raw());
-    glUniform3f(cube_uni_color_, 0.5f, 0.5f, 0.5f);
+    glUniform3f(cube_uni_color_, 1.0f, 1.0f, 1.0f);
     cube_->Draw();
   }
   // TODO(VS): invalidate framebuffer
   fbo_->Deactivate();
   glDisable(GL_DEPTH_TEST);
   // Now perform the SSAO pass
-  // int complexity = int(lerp(kMinComplexity, complexity_.value, kMaxComplexity));
+  int complexity = int(lerp(kMinComplexity, complexity_.value, kMaxComplexity));
   // Clear the target buffer to prevent a logical buffer load
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   ssao_program_->Use();
@@ -233,10 +281,10 @@ const int kMaxComplexity = 100;
   glBindTexture(GL_TEXTURE_2D, fbo_->depth_id());
   glUniform1i(ssao_uni_depth_tex_, 2);
   for (int i = 0; i < 16; ++i) {
-    glUniform3fv(ssao_uni_samples_, 16, &samples_[0].x);
+    glUniform2fv(ssao_uni_samples_+i, 1, &kSSAOSamples[i*2]);
   }
-  glUniformMatrix4fv(ssao_uni_projection_, 1, GL_FALSE, camera_.projection());
   glUniformMatrix4fv(ssao_uni_inv_projection_, 1, GL_FALSE, camera_.inv_projection());
+  glUniform1i(ssao_uni_num_samples_, complexity);
   Transform t;
   t.glScale(2.0f);
   glUniformMatrix4fv(ssao_uni_mvp_, 1, 0, t.raw());
